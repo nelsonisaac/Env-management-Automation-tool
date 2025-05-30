@@ -1,0 +1,18 @@
+# server
+/server/envmanagement/envmanagement/target/
+/server/envmanagement/envmanagement/.mvn/
+/server/envmanagement/envmanagement/mvnw
+/server/envmanagement/envmanagement/mvnw.cmd
+/server/envmanagement/envmanagement/*.log
+
+# client
+/client/env-management-ui/node_modules/
+/client/env-management-ui/dist/
+/client/env-management-ui/.vite/
+
+# IDE
+.idea/
+*.iml
+
+# Misc
+*.DS_Store
