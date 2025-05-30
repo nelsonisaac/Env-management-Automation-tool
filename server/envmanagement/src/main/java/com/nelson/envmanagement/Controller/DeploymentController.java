@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
-
+@CrossOrigin(origins = "http://localhost:5143")
 @RestController
 @RequestMapping("/api/environments")
 public class DeploymentController {

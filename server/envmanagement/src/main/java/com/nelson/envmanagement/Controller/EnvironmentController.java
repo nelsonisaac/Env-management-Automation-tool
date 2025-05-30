@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.io.IOException;
-
+@CrossOrigin(origins = "http://localhost:5143")
 @RestController
 @RequestMapping("/api/environments")
 public class EnvironmentController {
