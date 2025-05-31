@@ -1,4 +1,4 @@
-package com.example.envmanagement.controller;
+package com.nelson.envmanagement.controller;
 
 import com.nelson.envmanagement.Model.Environment;
 import com.nelson.envmanagement.Model.User;
@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.io.IOException;
-@CrossOrigin(origins = "http://localhost:5143")
 @RestController
 @RequestMapping("/api/environments")
 public class EnvironmentController {
@@ -38,7 +37,7 @@ public class EnvironmentController {
             String containerName = "wildfly-" + System.currentTimeMillis();
             ProcessBuilder pb = new ProcessBuilder(
                     "bash", "-c",
-                    String.format("cd terraform && terraform init && terraform apply -auto-approve -var='container_name=%s' -var='port=%d' -var='env_vars=[%s]'",
+                    String.format("cd infra && terraform init && terraform apply -auto-approve -var='container_name=%s' -var='port=%d' -var='env_vars=[%s]'",
                             containerName, request.getPort(), String.join(",", request.getEnvVars()))
             );
             Process process = pb.start();
@@ -70,10 +69,11 @@ public class EnvironmentController {
         }
     }
 
-    @GetMapping
+    @GetMapping()
     public List<Environment> getEnvironments() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
+        System.out.println(user);
         return environmentRepository.findByUser(user);
     }
 

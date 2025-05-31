@@ -11,14 +11,31 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // try {
+    //   const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
+    //   localStorage.setItem('token', response.data);
+    //   console.log(response.data);
+    //   navigate('/dashboard');
+    // } catch (err) {
+    //   setError('Invalid credentials');
+    // }
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
-      localStorage.setItem('token', response.data);
-      console.log(response.data);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Invalid credentials');
-    }
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials:'include',
+      body: JSON.stringify({ "email": email, "password": password })
+    });
+    console.log(response);
+    const token = await response.text();
+    localStorage.setItem('token', token);
+    console.log("after storage: "+token)
+    navigate('/dashboard');
+  } catch (err) {
+    console.error('Login error:', err);
+    console.log("after error: "+err)
+    setError('Login failed: ' + err.message);
+  }
   };
 
   return (

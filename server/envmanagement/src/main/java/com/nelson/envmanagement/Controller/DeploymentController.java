@@ -1,4 +1,4 @@
-package com.example.envmanagement.controller;
+package com.nelson.envmanagement.controller;
 
 import com.nelson.envmanagement.Model.Deployment;
 import com.nelson.envmanagement.Model.Environment;

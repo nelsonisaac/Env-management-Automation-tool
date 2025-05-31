@@ -17,8 +17,10 @@ function Dashboard() {
         const response = await axios.get('http://localhost:8080/api/environments', {
           headers: { Authorization: `Bearer ${token}` }
         });
+        console.log("dashboard: " + response)
         setEnvironments(response.data);
       } catch (err) {
+        console.log("in dashboard error: " + err);
         navigate('/login');
       }
     };
