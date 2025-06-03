@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,21 +43,13 @@ public class EnvironmentController {
             String envVarsFormatted = request.getEnvVars().stream()
                     .map(s -> "\\\"" + s + "\\\"")  // escape double quotes
                     .collect(Collectors.joining(","));
-            String fullEnvVar = "[ " + envVarsFormatted + " ]";
+            String fullEnvVar = "[ " + envVarsFormatted + " ]"; // adding [] so for HCL (terrform language)
             String terraformPath = "/mnt/c/ProgramData/chocolatey/bin/terraform.exe";
-//            String command = String.format(
-//                    "cd infra && /c/ProgramData/chocolatey/bin/terraform.exe init && /c/ProgramData/chocolatey/bin/terraform.exe apply -auto-approve " + "-var='container_name=%s' -var='port=%d' -var='env_vars=%s'",
-//                    containerName,
-//                    request.getPort(),
-//                    fullEnvVar
-//            );
             String command = String.format(
                     "cd infra && %s init && %s apply -auto-approve -var='container_name=%s' -var='port=%d' -var='env_vars=%s'",
-                    terraformPath, terraformPath, containerName, request.getPort(), fullEnvVar
-            );
+                    terraformPath, terraformPath, containerName, request.getPort(), fullEnvVar); // %s denotes the arguments passed at last
 
             ProcessBuilder pb = new ProcessBuilder("bash", "-c",command);
-//            ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
             System.out.println("Running command: " + pb.command());
 
@@ -78,14 +71,13 @@ public class EnvironmentController {
             int exitCode = process.waitFor();
             System.out.println("Terraform process exited with code: " + exitCode);
 
+            //start the docker container that was created using terraform
             Process process2 = new ProcessBuilder("docker", "ps", "-q", "-f", "name=" + containerName).start();
-
             String containerId;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
                 containerId = reader.lines().findFirst().orElse(null);
                 System.out.println("contaierId: " + containerId);
             }
-
 
             Environment environment = new Environment();
             environment.setUser(user);
@@ -103,18 +95,23 @@ public class EnvironmentController {
         }
     }
 
-    private String formatEnvVars(List<String> envVars){
-        return "[" + envVars.stream()
-                .map(s -> "\"" + s.replace("\"","\\\"") + "\"")
-                .collect(Collectors.joining(",")) + "]";
-    }
-
     @GetMapping()
-    public List<Environment> getEnvironments() {
+    public List<Environment> getAllEnvironments() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
         System.out.println(user);
         return environmentRepository.findByUser(user);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Environment> getEnvironmentDetails(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
+        Environment environment = environmentRepository.findById(id)
+                .filter(env -> env.getUser().getId().equals(user.getId()))
+                .orElse(null);
+        if(environment == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(environment);
     }
 
     @DeleteMapping("/{id}")
