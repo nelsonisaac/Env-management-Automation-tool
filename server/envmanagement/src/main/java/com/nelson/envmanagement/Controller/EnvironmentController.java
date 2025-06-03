@@ -12,10 +12,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/environments")
 public class EnvironmentController {
@@ -33,23 +37,53 @@ public class EnvironmentController {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userRepository.findByEmail(email);
             if (user == null) return ResponseEntity.status(401).body("User not found");
-
+            System.out.println("envVars: " +request.getEnvVars());
             String containerName = "wildfly-" + System.currentTimeMillis();
-            ProcessBuilder pb = new ProcessBuilder(
-                    "bash", "-c",
-                    String.format("cd infra && terraform init && terraform apply -auto-approve -var='container_name=%s' -var='port=%d' -var='env_vars=[%s]'",
-                            containerName, request.getPort(), String.join(",", request.getEnvVars()))
+            String envVarsFormatted = request.getEnvVars().stream()
+                    .map(s -> "\\\"" + s + "\\\"")  // escape double quotes
+                    .collect(Collectors.joining(","));
+            String fullEnvVar = "[ " + envVarsFormatted + " ]";
+            String terraformPath = "/mnt/c/ProgramData/chocolatey/bin/terraform.exe";
+//            String command = String.format(
+//                    "cd infra && /c/ProgramData/chocolatey/bin/terraform.exe init && /c/ProgramData/chocolatey/bin/terraform.exe apply -auto-approve " + "-var='container_name=%s' -var='port=%d' -var='env_vars=%s'",
+//                    containerName,
+//                    request.getPort(),
+//                    fullEnvVar
+//            );
+            String command = String.format(
+                    "cd infra && %s init && %s apply -auto-approve -var='container_name=%s' -var='port=%d' -var='env_vars=%s'",
+                    terraformPath, terraformPath, containerName, request.getPort(), fullEnvVar
             );
-            Process process = pb.start();
-            process.waitFor();
 
-//            String containerId = new ProcessBuilder("docker", "ps", "-q", "-f", "name=" + containerName)
-//                    .start().getInputStream().readAllLines().stream().findFirst().orElse(null);
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c",command);
+//            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(true);
+            System.out.println("Running command: " + pb.command());
+
+            Process process = pb.start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);  // print terraform output
+                }
+            }
+
+            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    System.err.println(line); // print terraform error output
+                }
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("Terraform process exited with code: " + exitCode);
+
             Process process2 = new ProcessBuilder("docker", "ps", "-q", "-f", "name=" + containerName).start();
 
             String containerId;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process2.getInputStream()))) {
                 containerId = reader.lines().findFirst().orElse(null);
+                System.out.println("contaierId: " + containerId);
             }
 
 
@@ -67,6 +101,12 @@ public class EnvironmentController {
         } catch (IOException | InterruptedException e) {
             return ResponseEntity.status(400).body("Environment creation failed: " + e.getMessage());
         }
+    }
+
+    private String formatEnvVars(List<String> envVars){
+        return "[" + envVars.stream()
+                .map(s -> "\"" + s.replace("\"","\\\"") + "\"")
+                .collect(Collectors.joining(",")) + "]";
     }
 
     @GetMapping()

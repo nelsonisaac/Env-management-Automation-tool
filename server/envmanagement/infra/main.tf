@@ -36,11 +36,4 @@ variable "env_vars" {
   type = list(string)
 }
 
-variable "management_port" {
-  type = number
-}
 
-ports {
-  internal = 9990
-  external = var.management_port
-}
