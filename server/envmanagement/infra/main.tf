@@ -22,6 +22,13 @@ resource "docker_container" "wildfly" {
     external = var.port
   }
   env = var.env_vars
+  healthcheck {
+    test     = ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+    interval = "30s"
+    timeout  = "10s"
+    retries  = 3
+    start_period = "10s"
+  }
 }
 
 variable "container_name" {

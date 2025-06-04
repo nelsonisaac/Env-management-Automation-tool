@@ -114,6 +114,38 @@ public class EnvironmentController {
         return ResponseEntity.ok(environment);
     }
 
+//    @GetMapping("/{id}/health")
+//    public ResponseEntity<String> getEnvironmentHealth(@PathVariable Long id) {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userRepository.findByEmail(email);
+//        Environment environment = environmentRepository.findById(id)
+//                .filter(env -> env.getUser().getId().equals(user.getId()))
+//                .orElse(null);
+//        if(environment == null) return ResponseEntity.status(401).build();
+//        return ResponseEntity.ok(environment.getStatus());
+//    }
+
+    @GetMapping("/{id}/health")
+    public String getEnvironmentHealth(@PathVariable Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
+        Environment environment = environmentRepository.findById(id)
+                .filter(env -> env.getUser().getId().equals(user.getId()))
+                .orElse(null);
+        try {
+            Process process = Runtime.getRuntime().exec(
+                    new String[]{"bash", "-c", "docker inspect --format='{{.State.Health.Status}}' " + environment.getContainerId()}
+            );
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = reader.readLine();
+            return line != null ? line.trim():"unknown";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEnvironment(@PathVariable Long id) {
         try {

@@ -79,8 +79,6 @@
 			<artifactId>jakarta.validation-api</artifactId>
 			<version>3.0.2</version> <!-- Or latest -->
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

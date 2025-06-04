@@ -6,12 +6,13 @@ import './EnvironmentDetails.css';
 function EnvironmentDetails() {
   const { id } = useParams();
   const [environment, setEnvironment] = useState(null);
-  const [health, setHealth] = useState('');
+  const [health, setHealth] = useState('loading');
   const [deployments, setDeployments] = useState([]);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let interval;
     const fetchEnvironment = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -22,12 +23,27 @@ function EnvironmentDetails() {
         const healthResponse = await axios.get(`http://localhost:8080/api/environments/${id}/health`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setHealth(healthResponse.data.status);
+        setHealth(healthResponse.data);
+        // const fetchHealth = async () => {
+        //   try {
+        //     const health = await axios.get(`http://localhost:8080/api/environments/${id}/health`, {
+        //       headers: { Authorization: `Bearer ${token}` }
+        //     });
+        //     setHealth(health.data);
+        //     console.log(health.data);
+        //   } catch (err) {
+        //     console.log("caught error: " + err)
+        //     setHealth(health);
+        //   }
+        // }
+        // await fetchHealth();
+        // interval = setInterval(fetchHealth, 10000);
         const deploymentsResponse = await axios.get(`http://localhost:8080/api/environments/${id}/deployments`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setDeployments(deploymentsResponse.data);
       } catch (err) {
+        console.log(err);
         navigate('/login');
       }
     };

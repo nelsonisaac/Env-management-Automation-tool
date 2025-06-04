@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 @CrossOrigin(origins = "http://localhost:5143")
 @RestController
 @RequestMapping("/api/environments")
@@ -26,7 +29,15 @@ public class DeploymentController {
         this.environmentRepository = environmentRepository;
         this.deploymentRepository = deploymentRepository;
     }
-
+    @GetMapping("/{id}/deployments")
+    public ResponseEntity<List> getDeployments(@PathVariable Long id){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Deployment> deployment = deploymentRepository.findByEnvironmentId(id);
+        if(!environmentRepository.existsById(id)){
+            ResponseEntity.status(404).body("Environment not found");
+        }
+        return ResponseEntity.ok(deployment);
+    }
 
     @PostMapping("/{id}/deploy")
     public ResponseEntity<?> deployWar(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
