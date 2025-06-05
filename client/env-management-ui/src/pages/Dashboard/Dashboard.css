@@ -2,100 +2,160 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-  }
-  
-  .dashboard-container h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .create-section {
-    margin-bottom: 2rem;
-  }
-  
-  .create-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .create-box {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-input {
+    background-color: #f8fafc; /* Light gray-blue background for a modern feel */
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font stack */
+}
+
+.dashboard-container h1 {
+    font-size: 2.5rem; /* Slightly larger for better hierarchy */
+    font-weight: 600;
+    color: #1e293b; /* Dark slate for better contrast */
+    margin-bottom: 2.5rem;
+    text-align: center; /* Centered for a balanced look */
+}
+
+.create-section {
+    margin-bottom: 3rem; /* More spacing for separation */
+}
+
+.create-section h2 {
+    font-size: 1.75rem; /* Slightly larger for emphasis */
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+.create-box {
+    background: #ffffff;
+    padding: 2rem; /* More padding for breathing room */
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Softer, larger shadow for depth */
+    border: 1px solid #e2e8f0; /* Subtle border for definition */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.create-box:hover {
+    transform: translateY(-3px); /* Slight lift on hover */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.form-input {
     width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.85rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #d1d5db; /* Lighter gray border */
+    border-radius: 6px;
     font-size: 1rem;
-  }
-  
-  .btn-success {
-    padding: 0.75rem 1.5rem;
-    background-color: #28a745;
-    color: white;
+    color: #374151;
+    background-color: #f9fafb; /* Very light background for inputs */
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6; /* Blue border on focus for accessibility */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); /* Subtle focus ring */
+}
+
+.btn-success {
+    padding: 0.85rem 2rem; /* Slightly larger for better clickability */
+    background-color: #10b981; /* Modern emerald green */
+    color: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-  }
-  
-  .environment-grid {
+    font-weight: 500;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-success:hover {
+    background-color: #059669; /* Darker emerald on hover */
+    transform: translateY(-1px); /* Subtle lift on hover */
+}
+
+.btn-success:active {
+    transform: translateY(0); /* Reset on click */
+}
+
+.environment-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .environment-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .environment-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .environment-card p {
-    margin-bottom: 0.5rem;
-  }
-  
-  .card-actions {
-    margin-top: 1rem;
-  }
-  
-  .btn-primary {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: white;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly wider cards */
+    gap: 2rem; /* More spacing between cards */
+}
+
+.environment-card {
+    background: #ffffff;
+    padding: 1.75rem; /* More padding for comfort */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.environment-card:hover {
+    transform: translateY(-5px); /* More pronounced lift on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.environment-card h3 {
+    font-size: 1.4rem; /* Larger for better readability */
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+}
+
+.environment-card p {
+    margin-bottom: 0.75rem;
+    color: #4b5563; /* Softer gray for text */
+    font-size: 0.95rem;
+}
+
+.card-actions {
+    margin-top: 1.25rem;
+    display: flex;
+    gap: 0.75rem; /* Better spacing between buttons */
+}
+
+.btn-primary {
+    padding: 0.6rem 1.25rem; /* Slightly larger for better clickability */
+    background-color: #3b82f6; /* Modern blue */
+    color: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-right: 0.5rem;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  .btn-danger {
-    padding: 0.5rem 1rem;
-    background-color: #dc3545;
-    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb; /* Darker blue on hover */
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-danger {
+    padding: 0.6rem 1.25rem;
+    background-color: #ef4444; /* Modern red */
+    color: #ffffff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-  }
-  
-  .btn-danger:hover {
-    background-color: #c82333;
-  }
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626; /* Darker red on hover */
+    transform: translateY(-1px);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
