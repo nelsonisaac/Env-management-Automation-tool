@@ -3,6 +3,7 @@ import Login from './pages/Login/Login'
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import EnvironmentDetails from './pages/Environment/EnvironmentDetails';
+import Home from './pages/Home/Home.jsx';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/environment/:id" element={<EnvironmentDetails />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </div>
     </Router>
