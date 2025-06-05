@@ -145,7 +145,6 @@ public class EnvironmentController {
         }
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEnvironment(@PathVariable Long id) {
         try {

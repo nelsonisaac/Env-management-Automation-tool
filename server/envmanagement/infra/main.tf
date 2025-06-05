@@ -21,6 +21,13 @@ resource "docker_container" "wildfly" {
     internal = 8080
     external = var.port
   }
+  ports {
+    internal = 9990
+    external = 9990
+  }
+  # Bind interfaces for HTTP and management
+  command = ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+
   env = var.env_vars
   healthcheck {
     test     = ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
@@ -42,5 +49,4 @@ variable "port" {
 variable "env_vars" {
   type = list(string)
 }
-
 

@@ -42,6 +42,7 @@ function EnvironmentDetails() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setDeployments(deploymentsResponse.data);
+        console.log(deploymentsResponse.data);
       } catch (err) {
         console.log(err);
         navigate('/login');
@@ -67,6 +68,7 @@ function EnvironmentDetails() {
       });
       setDeployments(deploymentsResponse.data);
     } catch (err) {
+      console.log("deployment error: " + err);
       alert('Deployment failed');
     }
   };
